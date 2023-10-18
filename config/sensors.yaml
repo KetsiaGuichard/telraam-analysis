@@ -1,0 +1,133 @@
+Paris-v1-1:
+  hardware_version: 1
+  instance_id: 5457
+  mac: 202481590400986
+  segment_id: 9000001618
+  status: non_active
+  time_added: '2022-06-09T15:15:25.041Z'
+Paris-v1-2:
+  hardware_version: 1
+  instance_id: 3007
+  mac: 202481588266259
+  segment_id: 9000001618
+  status: non_active
+  time_added: '2021-02-19T16:22:44.252Z'
+Liberte-v1-1:
+  hardware_version: 1
+  instance_id: 3321
+  mac: 202481591426955
+  segment_id: 9000001870
+  status: non_active
+  time_added: '2021-04-09T17:10:28.734Z'
+Liberte-v1-2:
+  hardware_version: 1
+  instance_id: 4048
+  mac: 202481587739512
+  segment_id: 9000001870
+  status: non_active
+  time_added: '2021-08-26T20:26:23.552Z'
+GDomaine-v2:
+  hardware_version: 2
+  instance_id: 7790
+  mac: 351901933283370
+  segment_id: 9000001877
+  status: active
+  time_added: '2023-09-07T16:00:13.543Z'
+GDomaine-v1-2:
+  hardware_version: 1
+  instance_id: 4047
+  mac: 202481591426955
+  segment_id: 9000001877
+  status: non_active
+  time_added: '2021-08-26T20:20:55.350Z'
+GDomaine-v1-1:
+  hardware_version: 1
+  instance_id: 3320
+  mac: 202481587739512
+  segment_id: 9000001877
+  status: non_active
+  time_added: '2021-04-09T14:31:09.927Z'
+Leclers-v1-3:
+  hardware_version: 1
+  instance_id: 5696
+  mac: 202481601097592
+  segment_id: 9000001906
+  status: active
+  time_added: '2022-07-21T13:18:20.491Z'
+Leclers-v1-2:
+  hardware_version: 1
+  instance_id: 3329
+  mac: 202481586914129
+  segment_id: 9000001906
+  status: non_active
+  time_added: '2021-04-10T16:42:51.343Z'
+Leclers-v1-1:
+  hardware_version: 1
+  instance_id: 3287
+  mac: 202481587739512
+  segment_id: 9000001906
+  status: non_active
+  time_added: '2021-04-02T17:03:04.444Z'
+Burel-v2:
+  hardware_version: 2
+  instance_id: 7785
+  mac: 351901933285748
+  segment_id: 9000002156
+  status: active
+  time_added: '2023-09-07T14:32:51.558Z'
+Burel-v1:
+  hardware_version: 1
+  instance_id: 3396
+  mac: 202481586649462
+  segment_id: 9000002156
+  status: active
+  time_added: '2021-04-23T12:36:02.259Z'
+Paris34-v2:
+  hardware_version: 2
+  instance_id: 7783
+  mac: 351901933344636
+  segment_id: 9000002453
+  status: active
+  time_added: '2023-09-07T13:46:24.628Z'
+Paris34-v1-2:
+  hardware_version: 1
+  instance_id: 3938
+  mac: 202481590339441
+  segment_id: 9000002453
+  status: non_active
+  time_added: '2021-07-05T12:07:38.162Z'
+Paris34-v1-1:
+  hardware_version: 1
+  instance_id: 3937
+  mac: 202481590339441
+  segment_id: 9000002453
+  status: non_active
+  time_added: '2021-07-05T12:07:37.440Z'
+Vignes-v1:
+  hardware_version: null
+  instance_id: 4645
+  mac: 202481600718155
+  segment_id: 9000003090
+  status: active
+  time_added: '2022-01-23T17:18:11.235Z'
+Prieure-v1:
+  hardware_version: 1
+  instance_id: 5256
+  mac: 202481597258181
+  segment_id: 9000003703
+  status: non_active
+  time_added: '2022-05-16T17:42:41.935Z'
+Veronniere-v1:
+  hardware_version: 1
+  instance_id: 5342
+  mac: 202481587060344
+  segment_id: 9000003775
+  status: active
+  time_added: '2022-05-25T18:42:12.774Z'
+Pasteur-v2:
+  hardware_version: 2
+  instance_id: 7803
+  mac: 351901933345351
+  segment_id: 9000004019
+  status: active
+  time_added: '2023-09-10T08:36:22.483Z'

@@ -1,0 +1,8 @@
+/.DS_Store
+/.env
+/.idea
+/.ipynb_checkpoints
+/.venv
+/__pycache__
+/data
+/draft.py
