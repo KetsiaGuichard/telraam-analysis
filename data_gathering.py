@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime, timedelta
 import pandas as pd
 import requests
 import yaml
@@ -10,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 HEADERS = {"X-Api-Key": os.getenv("TOKEN")}
 CAMERAS_URL = os.getenv("CAMERAS_URL")
-TRAFFIC_URL = os.getenv("TRAFFIC_URL")
+REPORTS_URL = os.getenv("REPORTS_URL")
 SEGMENTS_ID = os.getenv("SEGMENTS_ID").split(",")
 
 
@@ -28,6 +29,31 @@ def json2pandas(json_text: chr, key: chr):
     return pd.DataFrame.from_dict(dict_json[key])
 
 
+def get_all_segments(time: str = "past_hour"):
+    """Get id's of all active segments for specified time
+
+    Args:
+        time (str, optional): Asking time (format "%Y-%m-%d %H:00:00Z"). Defaults to past hour.
+
+    Returns:
+        list: list of all active segments for this time
+    """
+    if time == "past_hour":
+        past_hour = datetime.now() - timedelta(hours=3)
+        time = past_hour.strftime("%Y-%m-%d %H:00:00Z")
+    payload = {"time": time, "contents": "minimal", "area": "full"}
+    response = requests.request(
+        "POST",
+        f"{REPORTS_URL}traffic_snapshot",
+        headers=HEADERS,
+        data=str(payload),
+        timeout=10,
+    )
+    report = json2pandas(response.text, "features")
+    segments = [segment["segment_id"] for segment in report["properties"]]
+    return segments
+
+
 def get_cameras_by_segment(segment_id: int):
     """Get all camera instances that are associated with the given segment_id
     TODO : gestion des erreurs
@@ -42,6 +68,27 @@ def get_cameras_by_segment(segment_id: int):
     response = requests.request("GET", url, headers=HEADERS, timeout=10)
     camera = json2pandas(response.text, "camera")
     return camera
+
+
+def get_active_cameras_by_segment(segment_id: int):
+    """Get active cameras instances that are associated with the given segment_id
+    and their version of hardware (v1 or s2).
+    TODO : gestion des erreurs
+
+    Args:
+        segment_id (int): Telraam id of road segment
+
+    Returns:
+        dict: camera id and hardware version.
+    """
+    cameras = get_cameras_by_segment(segment_id)
+    active_cameras = cameras.query("status=='active'")
+    return {
+        f"v{version}": instance
+        for version, instance in zip(
+            active_cameras["hardware_version"], active_cameras["instance_id"]
+        )
+    }
 
 
 def get_traffic(
@@ -72,7 +119,7 @@ def get_traffic(
         "time_end": time_end,
     }
     response = requests.request(
-        "POST", TRAFFIC_URL, headers=HEADERS, data=str(payload), timeout=10
+        "POST", f"{REPORTS_URL}traffic", headers=HEADERS, data=str(payload), timeout=10
     )
     report = json2pandas(response.text, "report")
     return report
