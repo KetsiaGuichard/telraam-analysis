@@ -49,14 +49,14 @@ def get_all_segments(time: str = "past_hour"):
         data=str(payload),
         timeout=10,
     )
-    report = json2pandas(response.text, "features")
-    segments = [segment["segment_id"] for segment in report["properties"]]
-    return segments
+    if response.status_code == 200:
+        report = json2pandas(response.text, "features")
+        segments = [segment["segment_id"] for segment in report["properties"]]
+        return segments
 
 
 def get_cameras_by_segment(segment_id: int):
     """Get all camera instances that are associated with the given segment_id
-    TODO : gestion des erreurs
 
     Args:
         segment_id (int): Telraam id of road segment
@@ -66,14 +66,14 @@ def get_cameras_by_segment(segment_id: int):
     """
     url = f"{CAMERAS_URL}/segment/{segment_id}"
     response = requests.request("GET", url, headers=HEADERS, timeout=10)
-    camera = json2pandas(response.text, "camera")
-    return camera
+    if response.status_code == 200:
+        camera = json2pandas(response.text, "camera")
+        return camera
 
 
 def get_active_cameras_by_segment(segment_id: int):
     """Get active cameras instances that are associated with the given segment_id
     and their version of hardware (v1 or s2).
-    TODO : gestion des erreurs
 
     Args:
         segment_id (int): Telraam id of road segment
@@ -99,7 +99,6 @@ def get_traffic(
     telraam_format: chr = "per-hour",
 ):
     """Get traffic informance for a sensor (instance) or a segment
-    TODO : gestion des erreurs
 
     Args:
         telraam_id (int): Telraam id of sensor or segment
@@ -121,8 +120,9 @@ def get_traffic(
     response = requests.request(
         "POST", f"{REPORTS_URL}traffic", headers=HEADERS, data=str(payload), timeout=10
     )
-    report = json2pandas(response.text, "report")
-    return report
+    if response.status_code == 200:
+        report = json2pandas(response.text, "report")
+        return report
 
 
 def create_sensors_file():
