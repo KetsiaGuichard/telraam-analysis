@@ -47,12 +47,25 @@ def get_all_segments(time: str = "past_hour"):
         f"{REPORTS_URL}traffic_snapshot",
         headers=HEADERS,
         data=str(payload),
-        timeout=10,
+        timeout=20,
     )
     if response.status_code == 200:
         report = json2pandas(response.text, "features")
         segments = [segment["segment_id"] for segment in report["properties"]]
         return segments
+
+
+def get_all_cameras():
+    """Get id's of all cameras
+
+    Returns:
+        pd.DataFrame: list of all active cameras with their segment and version
+    """
+    response = requests.request("GET", CAMERAS_URL, headers=HEADERS, timeout=20)
+    if response.status_code == 200:
+        report = json2pandas(response.text, "cameras")
+        cameras = report.query('status == "active"').filter(['instance_id','segment_id','hardware_version'])
+        return cameras.reset_index()
 
 
 def get_cameras_by_segment(segment_id: int):
@@ -69,7 +82,9 @@ def get_cameras_by_segment(segment_id: int):
     if response.status_code == 200:
         camera = json2pandas(response.text, "camera")
         return camera
-
+    else:
+        print(response.headers)
+        return response.status_code
 
 def get_active_cameras_by_segment(segment_id: int):
     """Get active cameras instances that are associated with the given segment_id
@@ -82,13 +97,16 @@ def get_active_cameras_by_segment(segment_id: int):
         dict: camera id and hardware version.
     """
     cameras = get_cameras_by_segment(segment_id)
-    active_cameras = cameras.query("status=='active'")
-    return {
-        f"v{version}": instance
-        for version, instance in zip(
-            active_cameras["hardware_version"], active_cameras["instance_id"]
-        )
-    }
+    if type(cameras) != int:
+        active_cameras = cameras.query("status=='active'")
+        return {
+            f"v{version}": instance
+            for version, instance in zip(
+                active_cameras["hardware_version"], active_cameras["instance_id"]
+            )
+        }
+    else:
+        return cameras
 
 
 def get_traffic(
@@ -143,7 +161,3 @@ def create_sensors_file():
         sensors = pd.concat([sensors, sensors_tmp[info]], ignore_index=True)
     with open("config/sensors.yaml", "w", encoding="utf-8") as file:
         yaml.dump(sensors.to_dict("index"), file, default_flow_style=False)
-
-
-# get_traffic(7785, "2023-10-01 12:00:00Z", "2023-10-01 13:00:00Z", level="instances")
-# get_traffic(9000002156, "2023-10-01 12:00:00Z", "2023-10-01 13:00:00Z")
