@@ -64,7 +64,9 @@ def get_all_cameras():
     response = requests.request("GET", CAMERAS_URL, headers=HEADERS, timeout=20)
     if response.status_code == 200:
         report = json2pandas(response.text, "cameras")
-        cameras = report.query('status == "active"').filter(['instance_id','segment_id','hardware_version'])
+        cameras = report.query('status == "active"').filter(
+            ["instance_id", "segment_id", "hardware_version"]
+        )
         return cameras.reset_index()
 
 
@@ -86,23 +88,26 @@ def get_cameras_by_segment(segment_id: int):
         print(response.headers)
         return response.status_code
 
+
 def get_active_cameras_by_segment(segment_id: int):
-    """Get active cameras instances that are associated with the given segment_id
-    and their version of hardware (v1 or s2).
+    """Get active cameras instances that are associated with the given segment_id,
+    their version of hardware (v1 or s2) and the time they were installed.
 
     Args:
         segment_id (int): Telraam id of road segment
 
     Returns:
-        dict: camera id and hardware version.
+        dict: camera id : hardware version and installation date.
     """
     cameras = get_cameras_by_segment(segment_id)
     if type(cameras) != int:
         active_cameras = cameras.query("status=='active'")
         return {
-            f"v{version}": instance
-            for version, instance in zip(
-                active_cameras["hardware_version"], active_cameras["instance_id"]
+            f"v{version}": {"id": instance, "time_added": time_added}
+            for version, instance, time_added in zip(
+                active_cameras["hardware_version"],
+                active_cameras["instance_id"],
+                active_cameras["time_added"],
             )
         }
     else:
