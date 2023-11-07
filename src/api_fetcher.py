@@ -4,8 +4,8 @@ import json
 from datetime import datetime, timedelta
 import pandas as pd
 import requests
+import time
 import yaml
-
 
 from dotenv import load_dotenv
 
@@ -168,6 +168,8 @@ class TrafficFetcher(APIFetcher):
 
         Returns:
             pd.DataFrame : Traffic informations for this sensor/this segment during specified period
+
+        #TODO : générer erreur si période de temps supérieure à 3 mois
         """
         payload = {
             "id": telraam_id,
@@ -188,5 +190,20 @@ class TrafficFetcher(APIFetcher):
             return report
         return None
 
-    def get_full_traffic(self):
-        pass
+    def get_all_traffic(self, waiting_time:int = 10):
+        """Get traffic for given dates and all segments in config file.
+
+        Args:
+            waiting_time (int, optional): Waiting time between two requests (in seconds). Defaults to 10.
+
+        Returns:
+            pd.DataFrame: Traffic Data
+        """
+        traffic = pd.DataFrame()
+        for segment in self.segments_id:
+            traffic_tmp = self.get_traffic(segment)
+            if not traffic_tmp.empty :
+                print(traffic_tmp)
+                traffic = pd.concat([traffic, traffic_tmp], ignore_index=True)
+            time.sleep(waiting_time)    
+        return traffic
