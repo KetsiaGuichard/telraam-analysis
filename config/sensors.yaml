@@ -1,203 +1,580 @@
 0:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2022-06-10T16:46:29.958Z'
   hardware_version: 1
   instance_id: 5457
+  is_calibration_done: 'yes'
+  last_data_package: '2023-04-05T15:40:19.248Z'
   mac: 202481590400986
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001618
   status: non_active
   time_added: '2022-06-09T15:15:25.041Z'
+  time_end: null
+  user_id: 5938
 1:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-02-21T10:00:00.000Z'
   hardware_version: 1
   instance_id: 3007
+  is_calibration_done: 'no'
+  last_data_package: '2022-06-09T06:52:53.478Z'
   mac: 202481588266259
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001618
   status: non_active
   time_added: '2021-02-19T16:22:44.252Z'
+  time_end: null
+  user_id: 3218
 2:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2021-03-27T10:00:00.000Z'
   hardware_version: 1
   instance_id: 3246
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:36:34.636Z'
   mac: 202481587969773
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001844
   status: active
   time_added: '2021-03-27T09:02:09.357Z'
+  time_end: null
+  user_id: 3555
 3:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: null
   hardware_version: 1
   instance_id: 3321
+  is_calibration_done: 'no'
+  last_data_package: null
   mac: 202481591426955
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001870
   status: non_active
   time_added: '2021-04-09T17:10:28.734Z'
+  time_end: '2021-08-26T20:20:55.350Z'
+  user_id: 3586
 4:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-08-27T05:00:00.000Z'
   hardware_version: 1
   instance_id: 4048
+  is_calibration_done: 'no'
+  last_data_package: '2021-10-27T10:54:18.085Z'
   mac: 202481587739512
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001870
   status: non_active
   time_added: '2021-08-26T20:26:23.552Z'
+  time_end: null
+  user_id: 3586
 5:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2023-09-07T16:00:19.154Z'
   hardware_version: 2
   instance_id: 7790
+  is_calibration_done: 'no'
+  last_data_package: '2023-11-07T16:30:13.668Z'
   mac: 351901933283370
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001877
   status: active
   time_added: '2023-09-07T16:00:13.543Z'
+  time_end: null
+  user_id: 8121
 6:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-09-12T17:00:00.000Z'
   hardware_version: 1
   instance_id: 4047
+  is_calibration_done: 'no'
+  last_data_package: '2022-12-10T14:52:08.499Z'
   mac: 202481591426955
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001877
   status: non_active
   time_added: '2021-08-26T20:20:55.350Z'
+  time_end: null
+  user_id: 3628
 7:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-08-26T18:00:00.000Z'
   hardware_version: 1
   instance_id: 3320
+  is_calibration_done: 'no'
+  last_data_package: '2021-08-26T20:23:15.939Z'
   mac: 202481587739512
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001877
   status: non_active
   time_added: '2021-04-09T14:31:09.927Z'
+  time_end: '2021-08-26T20:26:23.552Z'
+  user_id: 3628
 8:
+  bikes_left: false
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2022-07-21T13:18:21.798Z'
   hardware_version: 1
   instance_id: 5696
+  is_calibration_done: partial
+  last_data_package: '2023-11-07T16:37:10.664Z'
   mac: 202481601097592
+  manual: false
+  pedestrians_left: false
+  pedestrians_right: true
   segment_id: 9000001906
   status: active
   time_added: '2022-07-21T13:18:20.491Z'
+  time_end: null
+  user_id: 6156
 9:
+  bikes_left: true
+  bikes_right: true
+  cars_left: false
+  cars_right: true
+  direction: true
+  first_data_package: '2021-05-05T17:00:00.000Z'
   hardware_version: 1
   instance_id: 3329
+  is_calibration_done: 'no'
+  last_data_package: '2021-10-08T11:37:26.445Z'
   mac: 202481586914129
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001906
   status: non_active
   time_added: '2021-04-10T16:42:51.343Z'
+  time_end: null
+  user_id: 3589
 10:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: null
   hardware_version: 1
   instance_id: 3287
+  is_calibration_done: 'no'
+  last_data_package: null
   mac: 202481587739512
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000001906
   status: non_active
   time_added: '2021-04-02T17:03:04.444Z'
+  time_end: '2021-04-09T14:31:09.927Z'
+  user_id: 3589
 11:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2023-09-07T14:45:30.304Z'
   hardware_version: 2
   instance_id: 7785
+  is_calibration_done: 'no'
+  last_data_package: '2023-11-07T16:30:05.313Z'
   mac: 351901933285748
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000002156
   status: active
   time_added: '2023-09-07T14:32:51.558Z'
+  time_end: null
+  user_id: 8120
 12:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-05-21T13:00:00.000Z'
   hardware_version: 1
   instance_id: 3396
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:36:43.511Z'
   mac: 202481586649462
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000002156
   status: active
   time_added: '2021-04-23T12:36:02.259Z'
+  time_end: null
+  user_id: 3700
 13:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2023-09-07T14:00:16.815Z'
+  hardware_version: 2
+  instance_id: 7783
+  is_calibration_done: 'no'
+  last_data_package: '2023-11-07T02:36:42.175Z'
+  mac: 351901933344636
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
+  segment_id: 9000002453
+  status: active
+  time_added: '2023-09-07T13:46:24.628Z'
+  time_end: null
+  user_id: 8118
+14:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2021-08-18T10:00:00.000Z'
   hardware_version: 1
   instance_id: 3938
+  is_calibration_done: 'no'
+  last_data_package: '2023-09-07T13:33:56.173Z'
   mac: 202481590339441
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000002453
   status: non_active
   time_added: '2021-07-05T12:07:38.162Z'
-14:
-  hardware_version: 2
-  instance_id: 7783
-  mac: 351901933344636
-  segment_id: 9000002453
-  status: non_active
-  time_added: '2023-09-07T13:46:24.628Z'
+  time_end: null
+  user_id: 4297
 15:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: null
   hardware_version: 1
   instance_id: 3937
+  is_calibration_done: 'no'
+  last_data_package: null
   mac: 202481590339441
+  manual: false
+  pedestrians_left: false
+  pedestrians_right: true
   segment_id: 9000002453
   status: non_active
   time_added: '2021-07-05T12:07:37.440Z'
+  time_end: '2021-07-05T12:07:38.162Z'
+  user_id: 4297
 16:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-10-18T16:27:23.280Z'
   hardware_version: 1
   instance_id: 4223
+  is_calibration_done: 'yes'
+  last_data_package: '2023-08-04T11:01:34.090Z'
   mac: 202481596413938
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000002666
   status: non_active
   time_added: '2021-10-12T21:08:58.553Z'
+  time_end: null
+  user_id: 4585
 17:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2021-10-11T08:37:22.195Z'
   hardware_version: 1
   instance_id: 4173
+  is_calibration_done: 'no'
+  last_data_package: '2021-10-11T15:57:50.580Z'
   mac: 202481596413938
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000002666
   status: non_active
   time_added: '2021-10-06T20:33:34.348Z'
+  time_end: '2021-10-11T15:58:07.577Z'
+  user_id: 4585
 18:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2022-01-23T17:36:07.894Z'
   hardware_version: null
   instance_id: 4645
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:37:28.679Z'
   mac: 202481600718155
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000003090
   status: active
   time_added: '2022-01-23T17:18:11.235Z'
+  time_end: null
+  user_id: 5089
 19:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2022-05-23T12:35:18.437Z'
   hardware_version: 1
   instance_id: 5256
+  is_calibration_done: 'yes'
+  last_data_package: '2023-08-12T13:36:19.394Z'
   mac: 202481597258181
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000003703
   status: non_active
   time_added: '2022-05-16T17:42:41.935Z'
+  time_end: null
+  user_id: 5745
 20:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2022-05-22T06:47:08.823Z'
   hardware_version: 1
   instance_id: 5304
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:36:51.456Z'
   mac: 202481600249346
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000003736
   status: active
   time_added: '2022-05-22T06:45:49.843Z'
+  time_end: null
+  user_id: 5783
 21:
+  bikes_left: true
+  bikes_right: true
+  cars_left: false
+  cars_right: true
+  direction: false
+  first_data_package: '2022-05-25T18:42:40.661Z'
   hardware_version: 1
   instance_id: 5342
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T15:44:29.555Z'
   mac: 202481587060344
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000003775
   status: active
   time_added: '2022-05-25T18:42:12.774Z'
+  time_end: null
+  user_id: 5819
 22:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2023-09-10T08:45:14.243Z'
   hardware_version: 2
   instance_id: 7803
+  is_calibration_done: 'no'
+  last_data_package: '2023-11-07T16:30:10.944Z'
   mac: 351901933345351
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000004019
   status: active
   time_added: '2023-09-10T08:36:22.483Z'
+  time_end: null
+  user_id: 8134
 23:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2022-07-12T09:55:53.076Z'
   hardware_version: 1
   instance_id: 5659
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:37:45.645Z'
   mac: 202481597580557
+  manual: false
+  pedestrians_left: false
+  pedestrians_right: true
   segment_id: 9000004042
   status: active
   time_added: '2022-07-12T09:48:57.601Z'
+  time_end: null
+  user_id: 5996
 24:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2022-08-24T15:17:44.099Z'
   hardware_version: 1
   instance_id: 5766
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:37:51.596Z'
   mac: 202481590302074
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000004130
   status: active
   time_added: '2022-08-24T15:17:22.064Z'
+  time_end: null
+  user_id: 6230
 25:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2023-02-03T15:29:10.023Z'
   hardware_version: 1
   instance_id: 6521
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:37:50.091Z'
   mac: 202481587845451
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000004697
   status: active
   time_added: '2023-02-03T15:28:56.681Z'
+  time_end: null
+  user_id: 7008
 26:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: true
+  first_data_package: '2023-08-22T14:22:12.698Z'
   hardware_version: 1
   instance_id: 7681
+  is_calibration_done: 'yes'
+  last_data_package: '2023-11-07T16:36:09.540Z'
   mac: 202481587837547
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000004971
   status: active
   time_added: '2023-08-22T14:21:54.937Z'
+  time_end: null
+  user_id: 6370
 27:
+  bikes_left: false
+  bikes_right: true
+  cars_left: false
+  cars_right: true
+  direction: true
+  first_data_package: '2023-04-21T12:51:06.857Z'
   hardware_version: 1
   instance_id: 6898
+  is_calibration_done: 'yes'
+  last_data_package: '2023-08-11T07:21:12.845Z'
   mac: 202481587837547
+  manual: false
+  pedestrians_left: false
+  pedestrians_right: true
   segment_id: 9000004971
   status: stopped
   time_added: '2023-04-21T12:45:56.298Z'
+  time_end: '2023-08-22T14:21:54.937Z'
+  user_id: 6370
 28:
+  bikes_left: true
+  bikes_right: true
+  cars_left: true
+  cars_right: true
+  direction: false
+  first_data_package: '2023-09-07T13:30:16.298Z'
   hardware_version: 2
   instance_id: 7782
+  is_calibration_done: 'no'
+  last_data_package: '2023-11-07T16:30:08.227Z'
   mac: 351901933345278
+  manual: false
+  pedestrians_left: true
+  pedestrians_right: true
   segment_id: 9000005665
   status: active
   time_added: '2023-09-07T13:22:05.076Z'
+  time_end: null
+  user_id: 8117
