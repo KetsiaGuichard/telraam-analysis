@@ -1,9 +1,11 @@
+from abc import ABC
 import os
 import json
 from datetime import datetime, timedelta
 import pandas as pd
 import requests
 import yaml
+
 
 from dotenv import load_dotenv
 
@@ -25,31 +27,21 @@ def json2pandas(json_text: chr, key: chr):
     return pd.DataFrame.from_dict(dict_json[key])
 
 
-class APIFetcher:
-    """Retrieve Telraam data from its API.
-
-    API Token and segments of interests can be provided directly or filled in the environment file.
-
-    Attributes:
-        token (dict, optional): Token for Telraam API. Defaults to .env variables.
-        segments_id (list, optional): Segments used for analysis, Defaults to .env variables.
-    """
+class APIFetcher(ABC):
+    """Retrieve Telraam data from its API."""
 
     def __init__(
         self,
-        token: dict = os.getenv("TOKEN"),
-        segments_id: list = os.getenv("SEGMENTS_ID").split(","),
     ):
-        """Initializes an instance of the APIFetcher class.
-
-        Args:
-            token (dict, optional): Token for Telraam API. Defaults to .env variables.
-            segments_id (list, optional): Segments used for analysis. Defaults to .env variables.
-        """
-        self.header = {"X-Api-Key": token}
-        self.segments_id = segments_id
+        """Initializes an instance of the APIFetcher class."""
+        self.header = {"X-Api-Key": os.getenv("TOKEN")}
+        self.segments_id = os.getenv("SEGMENTS_ID").split(",")
         self.cameras_url = os.getenv("CAMERAS_URL")
         self.reports_url = os.getenv("REPORTS_URL")
+
+
+class SystemFetcher(APIFetcher):
+    """Retrieve Telraam info on a system : get active cameras, all segments in world, etc."""
 
     def get_all_segments(self, time: str = "past_hour"):
         """Get id's of all active segments for specified time
@@ -133,32 +125,56 @@ class APIFetcher:
             }
         return cameras
 
-    def get_traffic(
+    def create_sensors_file(self):
+        """Get cameras infos for segments specified in .env
+        Create a YAML files with major cameras informations.
+        """
+        sensors = pd.DataFrame()
+        for segment in self.segments_id:
+            sensors_tmp = self.get_cameras_by_segment(segment)
+            sensors = pd.concat([sensors, sensors_tmp], ignore_index=True)
+        with open("config/sensors.yaml", "w", encoding="utf-8") as file:
+            yaml.dump(sensors.to_dict("index"), file, default_flow_style=False)
+
+
+class TrafficFetcher(APIFetcher):
+    """Initializes an instance of the APIFetcher class.
+
+    Args:
+        time_start (chr): beginning of the requested time interval - YYYY-MM-DD HH:MM:SSZ format
+        time_end (chr): end of the requested time interval - YYYY-MM-DD HH:MM:SSZ format
+        level (chr, optional): 'instances' if traffic for a sensor. Defaults to 'segments'.
+        telraam_format (chr, optional): Only per hour, per quarter soon. Defaults to 'per-hour'.
+    """
+
+    def __init__(
         self,
-        telraam_id: int,
         time_start: chr,
         time_end: chr,
         level: chr = "segments",
         telraam_format: chr = "per-hour",
     ):
+        super().__init__()
+        self.time_start = time_start
+        self.time_end = time_end
+        self.level = level
+        self.telraam_format = telraam_format
+
+    def get_traffic(self, telraam_id):
         """Get traffic informance for a sensor (instance) or a segment
 
         Args:
             telraam_id (int): Telraam id of sensor or segment
-            time_start (chr): beginning of the requested time interval - YYYY-MM-DD HH:MM:SSZ format
-            time_end (chr): end of the requested time interval - YYYY-MM-DD HH:MM:SSZ format
-            level (chr, optional): 'instances' if traffic for a sensor. Defaults to 'segments'.
-            telraam_format (chr, optional): Only per hour, per quarter soon. Defaults to 'per-hour'.
 
         Returns:
             pd.DataFrame : Traffic informations for this sensor/this segment during specified period
         """
         payload = {
             "id": telraam_id,
-            "level": level,
-            "format": telraam_format,
-            "time_start": time_start,
-            "time_end": time_end,
+            "level": self.level,
+            "format": self.telraam_format,
+            "time_start": self.time_start,
+            "time_end": self.time_end,
         }
         response = requests.request(
             "POST",
@@ -172,21 +188,5 @@ class APIFetcher:
             return report
         return None
 
-    def create_sensors_file(self):
-        """Get cameras infos for segments specified in .env
-        Create a YAML files with major cameras informations.
-        """
-        sensors = pd.DataFrame()
-        info = [
-            "instance_id",
-            "segment_id",
-            "mac",
-            "hardware_version",
-            "status",
-            "time_added",
-        ]
-        for segment in self.segments_id:
-            sensors_tmp = self.get_cameras_by_segment(segment)
-            sensors = pd.concat([sensors, sensors_tmp[info]], ignore_index=True)
-        with open("config/sensors.yaml", "w", encoding="utf-8") as file:
-            yaml.dump(sensors.to_dict("index"), file, default_flow_style=False)
+    def get_full_traffic(self):
+        pass
