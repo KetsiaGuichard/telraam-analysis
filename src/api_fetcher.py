@@ -2,15 +2,16 @@ from abc import ABC
 import os
 import json
 from datetime import datetime, timedelta
+import time
 import pandas as pd
 import requests
-import time
 import yaml
 
 from dotenv import load_dotenv
 
 # Get environment variables
 load_dotenv()
+
 
 def json2pandas(json_text: chr, key: chr):
     """Convert Telraam API response to pandas df
@@ -42,7 +43,7 @@ class APIFetcher(ABC):
 class SystemFetcher(APIFetcher):
     """Retrieve Telraam info on a system : get active cameras, all segments in world, etc."""
 
-    def get_all_segments(self, time: str = "past_hour"):
+    def get_all_segments(self, period: str = "past_hour"):
         """Get id's of all active segments for specified time
 
         Args:
@@ -51,10 +52,10 @@ class SystemFetcher(APIFetcher):
         Returns:
             list: list of all active segments for this time
         """
-        if time == "past_hour":
+        if period == "past_hour":
             past_hour = datetime.now() - timedelta(hours=3)
-            time = past_hour.strftime("%Y-%m-%d %H:00:00Z")
-        payload = {"time": time, "contents": "minimal", "area": "full"}
+            period = past_hour.strftime("%Y-%m-%d %H:00:00Z")
+        payload = {"time": period, "contents": "minimal", "area": "full"}
         response = requests.request(
             "POST",
             f"{self.reports_url}traffic_snapshot",
@@ -185,8 +186,10 @@ class TrafficFetcher(APIFetcher):
         report = json2pandas(response.text, "report")
         return report
 
-    def get_all_traffic(self, waiting_time:int = 10):
+    def get_all_traffic(self, waiting_time: int = 10):
         """Get traffic for given dates and all segments in config file.
+        If level = 'instances' and the segment has multiple cameras, each camera will be included.
+        Otherwise (level = 'segments', default), only the main camera will be included.
 
         Args:
             waiting_time (int, optional): Waiting time between two requests (in seconds). Defaults to 10.
@@ -195,9 +198,20 @@ class TrafficFetcher(APIFetcher):
             pd.DataFrame: Traffic Data
         """
         traffic = pd.DataFrame()
-        for segment in self.segments_id:
-            traffic_tmp = self.get_traffic(segment)
-            if not traffic_tmp.empty :
+
+        if self.level == "segments":
+            telraam_ids = self.segments_id
+        elif self.level == "instances":
+            system_infos = SystemFetcher()
+            telraam_ids = [
+                system_infos.get_cameras_by_segment(segment)["instance_id"].tolist()
+                for segment in self.segments_id
+            ]
+            telraam_ids = sum(telraam_ids, [])  # flatten list of lists
+
+        for tmp_id in telraam_ids:
+            traffic_tmp = self.get_traffic(tmp_id)
+            if not traffic_tmp.empty:
                 traffic = pd.concat([traffic, traffic_tmp], ignore_index=True)
-            time.sleep(waiting_time)    
+            time.sleep(waiting_time)
         return traffic
