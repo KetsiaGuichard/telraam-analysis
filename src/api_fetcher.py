@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 # Get environment variables
 load_dotenv()
 
-
 def json2pandas(json_text: chr, key: chr):
     """Convert Telraam API response to pandas df
 
@@ -63,11 +62,10 @@ class SystemFetcher(APIFetcher):
             data=str(payload),
             timeout=20,
         )
-        if response.status_code == 200:
-            report = json2pandas(response.text, "features")
-            segments = [segment["segment_id"] for segment in report["properties"]]
-            return segments
-        return None
+        report = json2pandas(response.text, "features")
+        response.raise_for_status()
+        segments = [segment["segment_id"] for segment in report["properties"]]
+        return segments
 
     def get_all_cameras(self):
         """Get id's of all cameras
@@ -78,13 +76,12 @@ class SystemFetcher(APIFetcher):
         response = requests.request(
             "GET", self.cameras_url, headers=self.header, timeout=20
         )
-        if response.status_code == 200:
-            report = json2pandas(response.text, "cameras")
-            cameras = report.query('status == "active"').filter(
-                ["instance_id", "segment_id", "hardware_version"]
-            )
-            return cameras.reset_index()
-        return None
+        response.raise_for_status()
+        report = json2pandas(response.text, "cameras")
+        cameras = report.query('status == "active"').filter(
+            ["instance_id", "segment_id", "hardware_version"]
+        )
+        return cameras.reset_index()
 
     def get_cameras_by_segment(self, segment_id: int):
         """Get all camera instances that are associated with the given segment_id
@@ -97,10 +94,9 @@ class SystemFetcher(APIFetcher):
         """
         url = f"{self.cameras_url}/segment/{segment_id}"
         response = requests.request("GET", url, headers=self.header, timeout=10)
-        if response.status_code == 200:
-            camera = json2pandas(response.text, "camera")
-            return camera
-        return response.status_code
+        response.raise_for_status()
+        camera = json2pandas(response.text, "camera")
+        return camera
 
     def get_active_cameras_by_segment(self, segment_id: int):
         """Get active cameras instances that are associated with the given segment_id,
@@ -185,10 +181,9 @@ class TrafficFetcher(APIFetcher):
             data=str(payload),
             timeout=10,
         )
-        if response.status_code == 200:
-            report = json2pandas(response.text, "report")
-            return report
-        return None
+        response.raise_for_status()
+        report = json2pandas(response.text, "report")
+        return report
 
     def get_all_traffic(self, waiting_time:int = 10):
         """Get traffic for given dates and all segments in config file.
@@ -203,7 +198,6 @@ class TrafficFetcher(APIFetcher):
         for segment in self.segments_id:
             traffic_tmp = self.get_traffic(segment)
             if not traffic_tmp.empty :
-                print(traffic_tmp)
                 traffic = pd.concat([traffic, traffic_tmp], ignore_index=True)
             time.sleep(waiting_time)    
         return traffic
