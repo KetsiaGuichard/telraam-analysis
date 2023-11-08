@@ -35,9 +35,10 @@ class APIFetcher(ABC):
     ):
         """Initializes an instance of the APIFetcher class."""
         self.header = {"X-Api-Key": os.getenv("TOKEN")}
-        self.segments_id = os.getenv("SEGMENTS_ID").split(",")
         self.cameras_url = os.getenv("CAMERAS_URL")
         self.reports_url = os.getenv("REPORTS_URL")
+        self.segments_id = list(map(int, os.getenv("SEGMENTS_ID").split(",")))
+        self.instances_id = list(map(int, os.getenv("INSTANCES_ID").split(",")))
 
 
 class SystemFetcher(APIFetcher):
@@ -82,6 +83,7 @@ class SystemFetcher(APIFetcher):
         cameras = report.query('status == "active"').filter(
             ["instance_id", "segment_id", "hardware_version"]
         )
+        time.sleep(5)
         return cameras.reset_index()
 
     def get_cameras_by_segment(self, segment_id: int):
@@ -202,12 +204,7 @@ class TrafficFetcher(APIFetcher):
         if self.level == "segments":
             telraam_ids = self.segments_id
         elif self.level == "instances":
-            system_infos = SystemFetcher()
-            telraam_ids = [
-                system_infos.get_cameras_by_segment(segment)["instance_id"].tolist()
-                for segment in self.segments_id
-            ]
-            telraam_ids = sum(telraam_ids, [])  # flatten list of lists
+            telraam_ids = self.instances_id
 
         for tmp_id in telraam_ids:
             traffic_tmp = self.get_traffic(tmp_id)
