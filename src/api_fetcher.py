@@ -1,13 +1,14 @@
-from abc import ABC
-import os
 import json
-from datetime import datetime, timedelta
-import time
+import os
 import pandas as pd
 import requests
+import time
 import yaml
 
+from abc import ABC
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 # Get environment variables
 load_dotenv()
@@ -129,7 +130,7 @@ class SystemFetcher(APIFetcher):
         Create a YAML files with major cameras informations.
         """
         sensors = pd.DataFrame()
-        for segment in self.segments_id:
+        for segment in tqdm(self.segments_id):
             sensors_tmp = self.get_cameras_by_segment(segment)
             sensors = pd.concat([sensors, sensors_tmp], ignore_index=True)
         with open("config/sensors.yaml", "w", encoding="utf-8") as file:
@@ -206,7 +207,7 @@ class TrafficFetcher(APIFetcher):
         elif self.level == "instances":
             telraam_ids = self.instances_id
 
-        for tmp_id in telraam_ids:
+        for tmp_id in tqdm(telraam_ids):
             traffic_tmp = self.get_traffic(tmp_id)
             if not traffic_tmp.empty:
                 traffic = pd.concat([traffic, traffic_tmp], ignore_index=True)

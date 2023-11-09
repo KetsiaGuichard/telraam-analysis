@@ -4,3 +4,4 @@ PyYAML==6.0.1
 requests==2.31.0
 seaborn==0.13.0
 Sphinx==7.2.6
+tqdm==4.66.1
