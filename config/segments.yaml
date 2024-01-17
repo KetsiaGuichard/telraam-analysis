@@ -1,0 +1,70 @@
+0:
+  segment_id: 9000004971
+  segment_name: "Rue des Manoirs"
+1:
+  segment_id: 9000001906
+  segment_name: "Rue du Maréchal Leclerc"
+2:
+  segment_id: 9000004130
+  segment_name: "Rue des tours carrés"
+3:
+  segment_id: 9000003703
+  segment_name: "Rue du Prieuré - 11"
+4:
+  segment_id: 9000004042
+  segment_name: "Place de l'hotel de ville"
+5:
+  segment_id: 9000003090
+  segment_name: "Rue des Vignes"
+6:
+  segment_id: 9000001844
+  segment_name: "Route de Vitré"
+7:
+  segment_id: 9000003746
+  segment_name: "Rue des Cottages"
+8:
+  segment_id: 9000001618
+  segment_name: "Rue de Paris - 11"
+9:
+  segment_id: 9000002156
+  segment_name: "Rue Fabien Burel"
+10:
+  segment_id: 9000001877
+  segment_name: "Rue du Grand Domaine"
+11:
+  segment_id: 9000001870
+  segment_name: "Avenue de la Liberté"
+12:
+  segment_id: 9000003775
+  segment_name: "Rue de la Veronnière"
+13:
+  segment_id: 9000002453
+  segment_name: "Rue de Paris - 34"
+14:
+  segment_id: 9000006207
+  segment_name: "Boulevard Laennec"
+15:
+  segment_id: 9000005665
+  segment_name: "Rue du Prieuré - autre"
+16:
+  segment_id: 9000004697
+  segment_name: "Boulevard de la Liberté"
+17:
+  segment_id: 9000004019
+  segment_name: "Rue Pasteur"
+18:
+  segment_id: 9000006227
+  segment_name: "Avenue des Platanes"
+19:
+  segment_id: 9000003736
+  segment_name: "Rue des écoles - Saint Didier"
+20:
+  segment_id: 9000002707
+  segment_name: "Rue du stade - Saint Didier"
+21:
+  segment_id: 9000002181
+  segment_name: "Rue de la vallée - Saint Didier"
+22:
+  segment_id: 9000002666
+  segment_name: "Route de Pont-Riou - Saint Didier"
+
