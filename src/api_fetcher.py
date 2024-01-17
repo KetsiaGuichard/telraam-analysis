@@ -186,16 +186,24 @@ class SystemFetcher(APIFetcher):
             }
         return cameras
 
-    def create_sensors_file(self):
+    def sensors_informations(self, write=False):
         """Get cameras infos for segments specified in .env
-        Create a YAML files with major cameras informations.
+        Create a YAML files with major cameras informations if write=True.
+
+        Args:
+            write (bool): Default to False (no writting in config file)
+
+        Returns:
+            pd.DataFrame: Dataframe of all sensors with information.
         """
         sensors = pd.DataFrame()
         for segment in tqdm(self.segments_id):
             sensors_tmp = self.get_cameras_by_segment(segment)
             sensors = pd.concat([sensors, sensors_tmp], ignore_index=True)
-        with open("config/sensors.yaml", "w", encoding="utf-8") as file:
-            yaml.dump(sensors.to_dict("index"), file, default_flow_style=False)
+        if write:
+            with open("config/sensors.yaml", "w", encoding="utf-8") as file:
+                yaml.dump(sensors.to_dict("index"), file, default_flow_style=False)
+        return sensors
 
 
 class TrafficFetcher(APIFetcher):
