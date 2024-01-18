@@ -149,20 +149,88 @@ class DataAvailabilityMapper:
         )
         sns.lineplot(data=global_period, x="day", y="uptime").set(title=title)
 
-    def available_segments_by_day(self, uptime:float = 0):
+    def __available_segments_by_day(self, uptime_threshold: float = 0):
         """Compute available days by combinations of pair (or more) of sensors
-        
+
         Args:
-           uptime (float): Threshold for uptime (data lower will be removed).
+           uptime_threshold (float): Threshold for uptime (data lower will be removed).
+
+        Returns:
+            pd.DataFrame: A dataframe with all possible combinations per day.
         """
         segment_by_day = self.availability(level_day=True)
-        segment_by_day = segment_by_day[segment_by_day['uptime']>uptime]
+        segment_by_day = segment_by_day[segment_by_day["uptime"] > uptime_threshold]
         segment_by_day = (
             segment_by_day.groupby("day")["segment_fullname"].agg(list).reset_index()
         )
-        segment_by_day["combinaisons"] = segment_by_day["segment_fullname"].apply(
+        segment_by_day["combinations"] = segment_by_day["segment_fullname"].apply(
             get_combinations
         )
-        segment_by_day = segment_by_day[segment_by_day["combinaisons"].map(len) > 0]
-        segment_by_day = segment_by_day.explode("combinaisons")
-        return segment_by_day
+        segment_by_day = segment_by_day[segment_by_day["combinations"].map(len) > 0]
+        segment_by_day = segment_by_day.explode("combinations")
+        return segment_by_day[["day", "combinations"]]
+
+    def counter_combinations(self, uptime_threshold: float = 0):
+        """Count how many days (consecutives or not) are available for each combination.
+
+        Args:
+           uptime_threshold (float): Threshold for uptime (data lower will be removed).
+
+        Returns:
+            pd.DataFrame: Dataframe with each combinations, count of available days and length of combination.
+        """
+        segment_by_day = self.__available_segments_by_day(uptime_threshold)
+        combinations = (
+            segment_by_day.groupby("combinations")
+            .size()
+            .reset_index(name="available_days")
+        )
+        combinations["combination_length"] = combinations["combinations"].apply(len)
+        return combinations
+
+    def best_combinations(self, uptime_threshold: float = 0):
+        """Select, for each combination length (pairs, trios, etc.) the best combinations.
+        The best combination is the one the higher number of available days.
+
+        Args:
+           uptime_threshold (float): Threshold for uptime (data lower will be removed).
+
+        Returns:
+            pd.DataFrame: Dataframe with length of combination, best combination and its number of days.
+        """
+        combinations = self.counter_combinations(uptime_threshold)
+        idx_max = combinations.groupby("combination_length")["available_days"].idxmax()
+        top_combinations = combinations.loc[idx_max].reset_index(drop=True)
+        return top_combinations
+
+    def best_combinations_details(
+        self, combination_length: int, uptime_threshold: float = 0
+    ):
+        """Give all data for the best combination of sensors of a specified length.
+
+        Args:
+            combination_length (int) : Length of the combination wanted. The best will be choosen.
+            uptime_threshold (float): Threshold for uptime (data lower will be removed).
+
+        Returns:
+            pd.DataFrame: Dataframe with traffic details (one row per day and per sensor).
+        """
+        # Get combination
+        top_combinations = self.best_combinations(uptime_threshold)
+        segments_list = top_combinations[
+            top_combinations["combination_length"] == combination_length
+        ]["combinations"].values[0]
+
+        # Get list of available days
+        segments_by_day = self.__available_segments_by_day(uptime_threshold)
+        days_list = segments_by_day[
+            segments_by_day["combinations"] == segments_list
+        ]["day"].to_list()
+
+        # Filter dataframe with these informations
+        top_enriched_data = self.enriched_data[
+            (self.enriched_data["segment_fullname"].isin(segments_list))
+            & (self.enriched_data["day"].isin(days_list))
+        ]
+
+        return top_enriched_data
