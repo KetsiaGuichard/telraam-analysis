@@ -24,6 +24,8 @@ def json2pandas(json_text: chr, key: chr):
         pd.DataFrame: Value informations for this key in a dataframe
     """
     dict_json = json.loads(json_text)
+    if len(key)==0:
+        return pd.DataFrame.from_dict(dict_json)
     return pd.DataFrame.from_dict(dict_json[key])
 
 
