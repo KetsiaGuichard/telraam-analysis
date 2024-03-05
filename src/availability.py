@@ -1,8 +1,10 @@
+from itertools import chain, combinations
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from itertools import chain, combinations
+from src.external_data_fetcher import get_vacations
 
 
 def get_combinations(names):
@@ -60,6 +62,24 @@ def create_all_dates(
         }
     )
     instances_hour["hour"] = instances_hour["date"].dt.hour
+
+    vacations = get_vacations().sort_values(by="start_date")
+    instances_hour = instances_hour.sort_values(by="date")
+    instances_hour = pd.merge_asof(
+        instances_hour,
+        vacations,
+        left_on="date",
+        right_on="start_date",
+        direction="backward",
+    )
+    mask = (instances_hour["date"] >= instances_hour["start_date"]) & (
+        instances_hour["date"] <= instances_hour["end_date"]
+    )
+    instances_hour["vacation_flag"] = (
+        mask & instances_hour["vacation_flag"].notnull()
+    ).astype(int)
+    instances_hour.loc[instances_hour["vacation_flag"] == 0, "vacation"] = "No vacation"
+
     return instances_hour
 
 
@@ -105,7 +125,9 @@ class DataAvailabilityMapper:
         availability["day"] = availability["date"].dt.date
         if level_day:
             availability = (
-                availability.groupby(["day", "segment_fullname"])["uptime"]
+                availability.groupby(["day", "segment_fullname", "vacation_flag"])[
+                    "uptime"
+                ]
                 .sum()
                 .reset_index()
             )
@@ -160,6 +182,11 @@ class DataAvailabilityMapper:
         """
         segment_by_day = self.availability(level_day=True)
         segment_by_day = segment_by_day[segment_by_day["uptime"] > uptime_threshold]
+
+        vacations_bool = (
+            segment_by_day.groupby("day")["vacation_flag"].max().reset_index()
+        )
+
         segment_by_day = (
             segment_by_day.groupby("day")["segment_fullname"].agg(list).reset_index()
         )
@@ -168,13 +195,18 @@ class DataAvailabilityMapper:
         )
         segment_by_day = segment_by_day[segment_by_day["combinations"].map(len) > 0]
         segment_by_day = segment_by_day.explode("combinations")
-        return segment_by_day[["day", "combinations"]]
+        segment_by_day = pd.merge(segment_by_day, vacations_bool, on="day", how="left")
 
-    def counter_combinations(self, uptime_threshold: float = 0):
+        return segment_by_day[["day", "combinations", "vacation_flag"]]
+
+    def counter_combinations(
+        self, uptime_threshold: float = 0, vacation_threshold: float = 1
+    ):
         """Count how many days (consecutives or not) are available for each combination.
 
         Args:
            uptime_threshold (float): Threshold for uptime (data lower will be removed).
+           vacation_threshold (float): Maximum proportion of vacation days (default to 1).
 
         Returns:
             pd.DataFrame: Dataframe with each combinations, count of available days and length of combination.
@@ -185,47 +217,64 @@ class DataAvailabilityMapper:
             .size()
             .reset_index(name="available_days")
         )
+        vacation_ratio = (
+            segment_by_day.groupby("combinations")["vacation_flag"].mean().reset_index()
+        )
+        combinations = pd.merge(
+            combinations, vacation_ratio, on="combinations", how="left"
+        )
+        combinations = combinations[combinations["vacation_flag"] <= vacation_threshold]
+
         combinations["combination_length"] = combinations["combinations"].apply(len)
         return combinations
 
-    def best_combinations(self, uptime_threshold: float = 0):
+    def best_combinations(
+        self, uptime_threshold: float = 0, vacation_threshold: float = 1
+    ):
         """Select, for each combination length (pairs, trios, etc.) the best combinations.
         The best combination is the one the higher number of available days.
 
         Args:
            uptime_threshold (float): Threshold for uptime (data lower will be removed).
+           vacation_threshold (float): Maximum proportion of vacation days (default to 1).
 
         Returns:
             pd.DataFrame: Dataframe with length of combination, best combination and its number of days.
         """
-        combinations = self.counter_combinations(uptime_threshold)
+        combinations = self.counter_combinations(uptime_threshold, vacation_threshold)
         idx_max = combinations.groupby("combination_length")["available_days"].idxmax()
         top_combinations = combinations.loc[idx_max].reset_index(drop=True)
         return top_combinations
 
     def best_combinations_details(
-        self, combination_length: int, uptime_threshold: float = 0
+        self,
+        combination_length: int,
+        uptime_threshold: float = 0,
+        vacation_threshold: float = 1,
     ):
         """Give all data for the best combination of sensors of a specified length.
 
         Args:
             combination_length (int) : Length of the combination wanted. The best will be choosen.
             uptime_threshold (float): Threshold for uptime (data lower will be removed).
+            vacation_threshold (float): Maximum proportion of vacation days (default to 1).
 
         Returns:
             pd.DataFrame: Dataframe with traffic details (one row per day and per sensor).
         """
         # Get combination
-        top_combinations = self.best_combinations(uptime_threshold)
+        top_combinations = self.best_combinations(uptime_threshold, vacation_threshold)
         segments_list = top_combinations[
             top_combinations["combination_length"] == combination_length
         ]["combinations"].values[0]
 
         # Get list of available days
-        segments_by_day = self.__available_segments_by_day(uptime_threshold)
-        days_list = segments_by_day[
-            segments_by_day["combinations"] == segments_list
-        ]["day"].to_list()
+        segments_by_day = self.__available_segments_by_day(
+            uptime_threshold
+        )
+        days_list = segments_by_day[segments_by_day["combinations"] == segments_list][
+            "day"
+        ].to_list()
 
         # Filter dataframe with these informations
         top_enriched_data = self.enriched_data[
