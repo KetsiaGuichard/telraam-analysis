@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from yaml import safe_load
+from src.external_data_fetcher import get_public_holidays, get_vacations
 
 
 def get_telraam_information():
@@ -77,11 +78,16 @@ class EnrichedDataLoader:
     def __enrich_dates(self):
         """Add calendar informations in a dataframe."""
         data_dates = self.__enriched_data.copy()
-        data_dates["date"] = pd.to_datetime(data_dates["date"])
+        data_dates["date"] = pd.to_datetime(data_dates["date"]).dt.tz_convert(
+            "Europe/Paris"
+        )
         data_dates["day"] = data_dates["date"].dt.date
+        data_dates["day_of_month"] = data_dates["date"].dt.day
         data_dates["hour"] = data_dates["date"].dt.hour
         data_dates["weekday"] = [day.strftime("%A") for day in data_dates["day"]]
         data_dates["week_number"] = data_dates["date"].dt.isocalendar().week
+        data_dates["month"] = data_dates["date"].dt.month
+        data_dates["year"] = data_dates["date"].dt.year
         self.__enriched_data = data_dates
 
     def __enrich_sensors(self):
@@ -95,8 +101,40 @@ class EnrichedDataLoader:
         )
         self.__enriched_data = data_sensors
 
+    def __enrich_special_events(self):
+        """Add public holidays and vacations"""
+        data_sensors = self.__enriched_data.copy()
+
+        # public holidays
+        public_holidays = get_public_holidays()
+        data_sensors = data_sensors.merge(public_holidays, on="day", how="left")
+        data_sensors = data_sensors.fillna(
+            {"public_holiday_flag": 0, "public_holiday": "No public holiday"}
+        )
+
+        # vacations
+        vacations = get_vacations().sort_values(by="start_date")
+        data_sensors = data_sensors.sort_values(by="date")
+        data_sensors = pd.merge_asof(
+            data_sensors,
+            vacations,
+            left_on="date",
+            right_on="start_date",
+            direction="backward",
+        )
+        mask = (data_sensors["date"] >= data_sensors["start_date"]) & (
+            data_sensors["date"] <= data_sensors["end_date"]
+        )
+        data_sensors["vacation_flag"] = (
+            mask & data_sensors["vacation_flag"].notnull()
+        ).astype(int)
+        data_sensors.loc[data_sensors["vacation_flag"] == 0, "vacation"] = "No vacation"
+
+        self.__enriched_data = data_sensors
+
     def get_enriched_data(self):
         """Get enriched data."""
         self.__enrich_dates()
         self.__enrich_sensors()
+        self.__enrich_special_events()
         return self.__enriched_data
