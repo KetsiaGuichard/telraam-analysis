@@ -39,14 +39,17 @@ class EnrichedDataLoader:
 
     Args:
         directory (str): Directory where the data are stored. Default to "data".
+        data (pd.DataFrame): Raw Data (optional).
     """
 
     def __init__(
         self,
-        directory: str = "data",
+        data = pd.DataFrame(),
+        directory: str = "data"
     ):
         """Initializes an instance of the APIFetcher class."""
         self.directory = directory
+        self.data = data
         self.raw_data = self.__retrieve_telraam_data()
         self.__enriched_data = self.raw_data
 
@@ -57,16 +60,18 @@ class EnrichedDataLoader:
         Returns:
             pd.DataFrame: A dataframe with all stored data in the directory.
         """
+        if(len(self.data) > 0):
+            return self.data
         files = [
             f
             for f in os.listdir(self.directory)
             if os.path.isfile(f"{self.directory}/{f}")
         ]
         if len(files) == 0:
-            return pd.DataFrame
+            return pd.DataFrame()
         raw_data = pd.DataFrame()
         for file in files:
-            tmp_data = pd.read_csv(f"data/{file}")
+            tmp_data = pd.read_csv(f"{self.directory}/{file}")
             raw_data = pd.concat([raw_data, tmp_data], ignore_index=True)
         raw_data = raw_data.drop_duplicates()
         return raw_data

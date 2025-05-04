@@ -67,4 +67,31 @@
 22:
   segment_id: 9000002666
   segment_name: "Route de Pont-Riou - Saint Didier"
+23:
+  segment_id: 9000006552
+  segment_name: "Boulevard Laennec - debut"
+24:
+  segment_id: 90000066807
+  segment_name: "Rue des randonneurs - Broons"
+25:
+  segment_id: 9000001618
+  segment_name: "Rue de Paris - 16"
+26:
+  segment_id: 9000007538
+  segment_name: "Chemin de la Goulgatiere"
+27:
+  segment_id: 9000007653
+  segment_name: "Allée des Peupliers"
+28:
+  segment_id: 9000008639
+  segment_name: "Rue de la vallée 8 - Saint Didier"
+29:
+  segment_id: 9000007920
+  segment_name: "Le Breuil"
+30:
+  segment_id: 9000007962
+  segment_name: "Rue du stade 12 - Saint Didier"
+31:
+  segment_id: 9000006705
+  segment_name: "Rue des Chateliers"
 

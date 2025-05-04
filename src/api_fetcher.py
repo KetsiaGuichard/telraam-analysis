@@ -216,6 +216,7 @@ class TrafficFetcher(APIFetcher):
         time_end (chr): end of the requested time interval - YYYY-MM-DD HH:MM:SSZ format
         level (chr, optional): 'instances' if traffic for a sensor. Defaults to 'segments'.
         telraam_format (chr, optional): Only per hour, per quarter soon. Defaults to 'per-hour'.
+        advanced (bool, optional): True if you want to query advanced API, False otherwise.
     """
 
     def __init__(
@@ -224,6 +225,7 @@ class TrafficFetcher(APIFetcher):
         time_end: chr,
         level: chr = "segments",
         telraam_format: chr = "per-hour",
+        advanced = False
     ):
         super().__init__()
         self.time_start = time_start
@@ -231,6 +233,11 @@ class TrafficFetcher(APIFetcher):
         self.level = level
         self.telraam_format = telraam_format
         self.periods = divide_into_subperiods(self.time_start, self.time_end)
+        self.advanced = advanced
+        if(advanced):
+            self.traffic_url = os.getenv("TRAFFIC_URL_ADVANCED")
+        else:
+            self.traffic_url = f"{self.reports_url}traffic"
 
     def get_traffic(self, telraam_id):
         """Get traffic informance for a sensor (instance) or a segment
@@ -243,19 +250,21 @@ class TrafficFetcher(APIFetcher):
 
         """
         report = pd.DataFrame()
-        columns = 'instance_id,segment_id,date,interval,uptime,heavy,car,bike,pedestrian,heavy_lft,heavy_rgt,car_lft,car_rgt,bike_lft,bike_rgt,pedestrian_lft,pedestrian_rgt,direction,car_speed_hist_0to120plus,mode_bicycle_lft,mode_bicycle_rgt,mode_bus_lft,mode_bus_rgt,mode_car_lft,mode_car_rgt,mode_lighttruck_lft,mode_lighttruck_rgt,mode_motorcycle_lft,mode_motorcycle_rgt,mode_pedestrian_lft,mode_pedestrian_rgt,mode_stroller_lft,mode_stroller_rgt,mode_tractor_lft,mode_tractor_rgt,mode_trailer_lft,mode_trailer_rgt,mode_truck_lft,mode_truck_rgt,speed_hist_car_lft,speed_hist_car_rgt,v85'
+        columns = "device_id,instance_id,segment_id,date,interval,uptime,heavy,car,bike,pedestrian,night,heavy_lft,heavy_rgt,car_lft,car_rgt,bike_lft,bike_rgt,pedestrian_lft,pedestrian_rgt,direction,car_speed_hist_0to70plus,car_speed_hist_0to120plus,mode_bicycle_lft,mode_bicycle_rgt,mode_bus_lft,mode_bus_rgt,mode_car_lft,mode_car_rgt,mode_lighttruck_lft,mode_lighttruck_rgt,mode_motorcycle_lft,mode_motorcycle_rgt,mode_pedestrian_lft,mode_pedestrian_rgt,mode_stroller_lft,mode_stroller_rgt,mode_tractor_lft,mode_tractor_rgt,mode_trailer_lft,mode_trailer_rgt,mode_truck_lft,mode_truck_rgt,mode_night_lft,mode_night_rgt,speed_hist_car_lft,speed_hist_car_rgt,brightness,sharpness,period_start,period_duration,v85"
+        print(telraam_id)
         for period in self.periods:
             payload = {
                 "id": telraam_id,
                 "level": self.level,
                 "format": self.telraam_format,
                 "time_start": period[0],
-                "time_end": period[1],
-                "columns": columns,
+                "time_end": period[1]
             }
+            if self.advanced:
+                payload['columns'] = columns
             response = requests.request(
                 "POST",
-                f"{self.reports_url}traffic",
+                self.traffic_url,
                 headers=self.header,
                 data=str(payload),
                 timeout=30,
