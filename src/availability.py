@@ -133,15 +133,17 @@ class DataAvailabilityMapper:
             )
         return availability
 
-    def heatmap_availability(self):
+    def heatmap_availability(self, ax):
         """
         Visual representation of available data, with a color gradient on the uptime.
         """
         availability_heatmap_format = self.availability().pivot(
             index="segment_fullname", columns="date", values="uptime"
         )
+        labels_y = self.enriched_data['segment_fullname'].unique()
+        labels_y.sort()
         sns.heatmap(
-            data=availability_heatmap_format, vmin=0, vmax=1, center=0.5, cmap="inferno"
+            data=availability_heatmap_format, vmin=0, vmax=1, yticklabels=labels_y, center=0.5, cmap="inferno", ax=ax
         )
 
     def evolution_sum_uptime(self, segment_list: list = []):

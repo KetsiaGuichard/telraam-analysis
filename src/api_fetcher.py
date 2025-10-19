@@ -8,6 +8,9 @@ from tqdm import tqdm
 import requests
 import yaml
 import pandas as pd
+import geopandas as gpd
+from shapely.geometry import shape
+
 
 # Get environment variables
 load_dotenv()
@@ -99,6 +102,7 @@ class APIFetcher(ABC):
         """Initializes an instance of the APIFetcher class."""
         self.header = {"X-Api-Key": os.getenv("TOKEN")}
         self.cameras_url = os.getenv("CAMERAS_URL")
+        self.sensors_url = os.getenv("SEGMENTS_URL")
         self.reports_url = os.getenv("REPORTS_URL")
         self.segments_id = list(map(int, os.getenv("SEGMENTS_ID").split(",")))
         self.instances_id = list(map(int, os.getenv("INSTANCES_ID").split(",")))
@@ -164,6 +168,29 @@ class SystemFetcher(APIFetcher):
         camera = json2pandas(response.text, "camera")
         time.sleep(5)
         return camera
+    
+    def get_segment_info(self, segment_id: int):
+        """Get all infos associated with this segment_id
+
+        Args:
+            segment_id (int): Telraam id of road segment
+
+        Returns:
+            pd.DataFrame: information of this segment (including location)
+        """
+        url = f"{self.sensors_url}{segment_id}"
+        response = requests.request("GET", url, headers=self.header, timeout=20)
+        response.raise_for_status()
+        features = json.loads(response.text)["features"]
+        records = []
+        for f in features:
+            geom = shape(f["geometry"])
+            oidn = f["properties"]["oidn"]
+            records.append({"segment_id": oidn, "geometry": geom})
+        if records and "geometry" in records[0]:
+            segment_infos = gpd.GeoDataFrame(records, geometry="geometry", crs="EPSG:4326")
+            time.sleep(5)
+            return segment_infos    
 
     def get_active_cameras_by_segment(self, segment_id: int):
         """Get active cameras instances that are associated with the given segment_id,
@@ -206,6 +233,26 @@ class SystemFetcher(APIFetcher):
             with open("config/sensors.yaml", "w", encoding="utf-8") as file:
                 yaml.dump(sensors.to_dict("index"), file, default_flow_style=False)
         return sensors
+    
+    def segments_informations(self, write=False):
+        """Get sensorts infos for segments specified in .env
+        Create a YAML files with major cameras informations if write=True.
+
+        Args:
+            write (bool): Default to False (no writting in config file)
+
+        Returns:
+            pd.DataFrame: Dataframe of all sensors with information.
+        """
+        segments = pd.DataFrame()
+        for segment in tqdm(self.segments_id):
+            segments_tmp = self.get_segment_info(segment)
+            segments = pd.concat([segments, segments_tmp], ignore_index=True)
+        if write:
+            with open("config/segments_info.yaml", "w", encoding="utf-8") as file:
+                yaml.dump(segments.to_dict("index"), file, default_flow_style=False)
+        return segments
+    
 
 
 class TrafficFetcher(APIFetcher):
