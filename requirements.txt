@@ -1,7 +1,10 @@
+geopandas==1.1.1
+numpy==1.26.4
 pandas==2.1.1
 python-dotenv==1.0.0
 PyYAML==6.0.1
 requests==2.31.0
 seaborn==0.13.0
+shapely==2.1.2
 Sphinx==7.2.6
 tqdm==4.66.1

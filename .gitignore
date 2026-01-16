@@ -6,3 +6,5 @@
 /__pycache__
 /data
 /draft.py
+src/__pycache__/
+docs/__pycache__/
